@@ -46,8 +46,23 @@ function Dashboard() {
 
 
   useEffect(() => {
+    // Get the initial rooms data when the component mounts
     getRooms();
 
+    // Set up a listener for the "rooms_updated" event
+    socket.on("rooms_updated", (newRooms) => {
+        setRooms(newRooms);
+    });
+
+    // Clean up the listener when the component unmounts
+    return () => {
+        socket.off("rooms_updated");
+    };
+}, []);
+
+
+  useEffect(() => {
+    
     socket.on('receive_message', (message) => {
       setMessageReceived(message);
     });
